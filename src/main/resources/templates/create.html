@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AITU Banking Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --accent-green: #11998e;
+            --accent-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        body {
+            background: linear-gradient(45deg, #f0f2f5 0%, #c9d6ff 100%);
+            min-height: 100vh;
+            display: flex;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: #1a1a1a;
+            color: white;
+            min-height: 100vh;
+            position: fixed;
+            padding: 2rem 1.5rem;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .sidebar-brand {
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-brand-wrapper {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #38ef7d;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .sidebar-logo {
+            max-width: 50px;
+            height: auto;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .sidebar-brand-wrapper:hover .sidebar-logo {
+            transform: scale(1.1);
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-item-custom {
+            margin-bottom: 0.8rem;
+        }
+
+        .nav-link-custom {
+            color: #adb5bd;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .nav-link-custom:hover, .nav-link-custom.active {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        }
+
+        .nav-link-custom i {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 2.5rem;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+        }
+
+        .welcome-card {
+            background: var(--accent-gradient);
+            color: white;
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 20px rgba(17, 153, 142, 0.2);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid #eee;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            border-color: #38ef7d;
+        }
+
+        .table-custom {
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            width: 100%;
+        }
+
+        .table-custom tr {
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .table-custom td, .table-custom th {
+            padding: 1.2rem;
+            vertical-align: middle;
+            border-radius: 12px;
+        }
+
+        .badge-status {
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="sidebar">
+    <div class="sidebar-brand">
+        <a href="/service?view=home" class="sidebar-brand-wrapper">
+            <img src="/images/logo.png" alt="Logo" class="sidebar-logo me-2">
+            <span>AITU ManageBANK</span>
+        </a>
+    </div>
+
+    <ul class="nav-menu">
+        <li class="nav-item-custom">
+            <a href="/service?view=home" class="nav-link-custom" th:classappend="${view == 'home' || view == null ? 'active' : ''}">
+                <i class="bi bi-grid-1x2"></i> Бас мәзір
+            </a>
+        </li>
+        <li class="nav-item-custom">
+            <a href="/service?view=accounts" class="nav-link-custom" th:classappend="${view == 'accounts' ? 'active' : ''}">
+                <i class="bi bi-wallet2"></i> Шоттар
+            </a>
+        </li>
+        <li class="nav-item-custom">
+            <a href="/service?view=banks" class="nav-link-custom" th:classappend="${view == 'banks' ? 'active' : ''}">
+                <i class="bi bi-building"></i> Банктер
+            </a>
+        </li>
+        <li class="nav-item-custom">
+            <a href="/service?view=customers" class="nav-link-custom" th:classappend="${view == 'customers' ? 'active' : ''}">
+                <i class="bi bi-people"></i> Тұтынушылар
+            </a>
+        </li>
+    </ul>
+
+    <div style="position: absolute; bottom: 2rem; width: calc(var(--sidebar-width) - 3rem);">
+        <hr class="text-muted">
+        <p class="text-muted small mb-0">Powered by</p>
+        <p class="small fw-bold">Karashev Nurkhan</p>
+    </div>
+</nav>
+
+<main class="main-content">
+
+    <div th:if="${view == null || view == 'home'}" class="welcome-card">
+        <h1 class="display-5 fw-bold mb-2">Қайырлы күн!</h1>
+        <p class="lead opacity-75">AITU Management Banking жүйесіне қош келдіңіз. Барлық қаржылық деректер осында.</p>
+    </div>
+
+    <div th:if="${view == null || view == 'home'}">
+        <h4 class="mb-4 fw-bold text-secondary">Жылдам қолжетімділік</h4>
+        <div class="stats-grid">
+            <a href="/service?view=accounts" class="text-decoration-none text-dark">
+                <div class="stat-item">
+                    <i class="bi bi-cash-stack text-success display-5 mb-3"></i>
+                    <h5>Шоттарды басқару</h5>
+                    <p class="text-muted small">Баланс пен лимиттер</p>
+                </div>
+            </a>
+            <a href="/service?view=banks" class="text-decoration-none text-dark">
+                <div class="stat-item">
+                    <i class="bi bi-shield-check text-primary display-5 mb-3"></i>
+                    <h5>Банктер тізімі</h5>
+                    <p class="text-muted small">Серіктестерді бақылау</p>
+                </div>
+            </a>
+            <a href="/service?view=customers" class="text-decoration-none text-dark">
+                <div class="stat-item">
+                    <i class="bi bi-person-lines-fill text-warning display-5 mb-3"></i>
+                    <h5>Тұтынушылар</h5>
+                    <p class="text-muted small">Клиенттер дерекқоры</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${view == 'accounts'}" class="glass-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0"><i class="bi bi-wallet2 text-success me-2"></i> Шоттар тізімі</h2>
+            <span class="badge bg-success badge-status" th:text="${accounts.size() + ' белсенді'}"></span>
+        </div>
+        <table class="table table-custom">
+            <thead>
+            <tr class="text-muted"><th>Шот нөмірі</th><th>Баланс</th><th>Лимит</th><th>Тұтынушы ID</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="acc : ${accounts}">
+                <td class="fw-bold" th:text="${acc.accountNumber}"></td>
+                <td><span class="text-success fw-bold" th:text="${acc.balance + ' ₸'}"></span></td>
+                <td th:text="${acc.overdraftLimit + ' ₸'}"></td>
+                <td><span class="badge bg-light text-dark" th:text="'ID: ' + ${acc.customerId}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${view == 'banks'}" class="glass-card">
+        <h2 class="fw-bold mb-4"><i class="bi bi-building text-success me-2"></i> Біздің банктер</h2>
+        <table class="table table-custom">
+            <thead class="text-muted">
+            <tr><th>ID</th><th>Атауы</th><th>Елі</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="b : ${banks}">
+                <td th:text="${b.bankId}"></td>
+                <td class="fw-bold" th:text="${b.name}"></td>
+                <td><i class="bi bi-geo-alt me-2 text-danger"></i><span th:text="${b.country}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${view == 'customers'}" class="glass-card">
+        <h2 class="fw-bold mb-4"><i class="bi bi-people text-success me-2"></i> Тұтынушылар қоры</h2>
+        <table class="table table-custom">
+            <thead class="text-muted">
+            <tr><th>ID</th><th>Аты жөні</th><th>Мекен-жайы</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${customers}">
+                <td th:text="${c.id}"></td>
+                <td class="fw-bold" th:text="${c.name}"></td>
+                <td><i class="bi bi-map me-2 text-primary"></i><span th:text="${c.address}"></span></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+</body>
+</html>
