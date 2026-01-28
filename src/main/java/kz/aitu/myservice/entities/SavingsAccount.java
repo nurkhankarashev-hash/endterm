@@ -4,7 +4,7 @@ public class SavingsAccount extends Account {
     private double interestRate;
 
     public SavingsAccount(String accountNumber, double balance, double interestRate, int customerId) {
-        super(accountNumber, balance, customerId); // Передаем customerId в конструктор родительского класса
+        super(accountNumber, balance, customerId);
         this.interestRate = interestRate;
     }
 
@@ -18,7 +18,7 @@ public class SavingsAccount extends Account {
 
     public void applyInterest() {
         double interest = getBalance() * interestRate;
-        //deposit(interest);
+
     }
 
     @Override

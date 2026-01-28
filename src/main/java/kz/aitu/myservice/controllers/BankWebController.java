@@ -1,6 +1,9 @@
 package kz.aitu.myservice.controllers;
 
-import kz.aitu.myservice.repository.Dms;
+// Жаңа репозиторийлерді импорттау міндетті
+import kz.aitu.myservice.repository.AccountRepository;
+import kz.aitu.myservice.repository.BankRepository;
+import kz.aitu.myservice.repository.CustomerRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +21,15 @@ public class BankWebController {
     public String showService(@RequestParam(value = "view", defaultValue = "home") String view, Model model) {
         model.addAttribute("view", view);
 
-        if (view.equals("accounts")) model.addAttribute("accounts", Dms.getAllAccounts());
-        if (view.equals("banks")) model.addAttribute("banks", Dms.getAllBanks());
-        if (view.equals("customers")) model.addAttribute("customers", Dms.getAllCustomers());
+
+        if (view.equals("accounts")) {
+            model.addAttribute("accounts", AccountRepository.getAll());
+        } else if (view.equals("banks")) {
+            model.addAttribute("banks", BankRepository.getAll());
+        } else if (view.equals("customers")) {
+            model.addAttribute("customers", CustomerRepository.getAll());
+        }
+
 
         return "create";
     }

@@ -1,59 +1,42 @@
 package kz.aitu.myservice.controllers;
 
 import kz.aitu.myservice.entities.Bank;
-import kz.aitu.myservice.repository.Dms;
-import org.springframework.http.ResponseEntity;
+import kz.aitu.myservice.repository.BankRepository;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/banks")
 public class BankController {
 
     @GetMapping
-    public List<Bank> getAll() {
-        return Dms.getAllBanks();
-    }
-
-    @PostMapping
-    public ResponseEntity<String> add(@RequestBody Bank bank) {
-        Dms.addBank(bank.getName(), bank.getCountry());
-        return ResponseEntity.ok("Bank added");
-    }
+    public List<Bank> getAll() { return BankRepository.getAll(); }
 
     @GetMapping("/{id}")
-    public Bank getById(@PathVariable int id) {
-        return Dms.getBankById(id);
+    public Bank getById(@PathVariable int id) { return BankRepository.getById(id); }
+
+    @PostMapping
+    public String create(@RequestBody Bank bank) {
+        BankRepository.add(bank.getName(), bank.getCountry());
+        return "Bank added";
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Bank bank) {
-        Dms.updateBank(id, bank.getName(), bank.getCountry());
-        return ResponseEntity.ok("Bank updated");
+    public String update(@PathVariable int id, @RequestBody Bank bank) {
+        BankRepository.update(id, bank.getName(), bank.getCountry());
+        return "Bank updated";
+    }
+
+    @PatchMapping("/{id}")
+    public String patch(@PathVariable int id, @RequestBody Map<String, Object> updates) {
+        BankRepository.patch(id, updates);
+        return "Bank patched";
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
-        Dms.deleteBank(id);
-        return ResponseEntity.ok("Bank deleted");
-    }
-    @PatchMapping("/{id}")
-    public ResponseEntity<String> patch(@PathVariable int id, @RequestBody java.util.Map<String, Object> updates) {
-
-        Bank bank = Dms.getBankById(id);
-        if (bank == null) return ResponseEntity.notFound().build();
-
-
-        if (updates.containsKey("name")) {
-            bank.setName((String) updates.get("name"));
-        }
-        if (updates.containsKey("country")) {
-            bank.setCountry((String) updates.get("country"));
-        }
-
-
-        Dms.updateBank(id, bank.getName(), bank.getCountry());
-
-        return ResponseEntity.ok("Bank patched");
+    public String delete(@PathVariable int id) {
+        BankRepository.delete(id);
+        return "Bank deleted";
     }
 }
