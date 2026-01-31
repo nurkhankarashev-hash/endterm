@@ -1,5 +1,6 @@
 package kz.aitu.myservice.repository;
 
+import kz.aitu.myservice.config.DataBaseConfig;
 import kz.aitu.myservice.entities.*;
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,14 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 public class AccountRepository {
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "nurkhan2222";
 
     public static List<Account> getAll() {
         List<Account> list = new ArrayList<>();
         String sql = "SELECT * FROM accounts";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+        try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             ResultSet r = stmt.executeQuery();
             while (r.next()) {
@@ -31,7 +29,7 @@ public class AccountRepository {
 
     public static Account getById(int id) {
         String sql = "SELECT * FROM accounts WHERE account_id = ?";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet r = stmt.executeQuery();
@@ -49,7 +47,7 @@ public class AccountRepository {
 
     public static void add(String num, double bal, double lim, int cid) {
         String sql = "INSERT INTO accounts (account_number, balance, overdraft_limit, customer_id) VALUES (?, ?, ?, ?)";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, num);
             stmt.setDouble(2, bal);
@@ -61,7 +59,7 @@ public class AccountRepository {
 
     public static void update(int id, String num, double bal, double lim) {
         String sql = "UPDATE accounts SET account_number = ?, balance = ?, overdraft_limit = ? WHERE account_id = ?";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, num);
             stmt.setDouble(2, bal);
@@ -83,7 +81,7 @@ public class AccountRepository {
         sql.setLength(sql.length() - 2);
         sql.append(" WHERE account_id = ?");
         params.add(id);
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 stmt.setObject(i + 1, params.get(i));
@@ -94,7 +92,7 @@ public class AccountRepository {
 
     public static void delete(int id) {
         String sql = "DELETE FROM accounts WHERE account_id = ?";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();

@@ -1,5 +1,6 @@
 package kz.aitu.myservice.repository;
 
+import kz.aitu.myservice.config.DataBaseConfig;
 import kz.aitu.myservice.entities.Bank;
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,15 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 public class BankRepository {
-    private static final String URL = "jdbc:postgresql://localhost:5432/postgres";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "nurkhan2222";
+
 
     public static List<Bank> getAll() {
         List<Bank> list = new ArrayList<>();
         String sql = "SELECT * FROM banks";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement stmt = con.prepareStatement(sql)) {
+        try (Connection con = DataBaseConfig.getConnection();
+              PreparedStatement stmt = con.prepareStatement(sql)) {
             ResultSet r = stmt.executeQuery();
             while (r.next()) {
                 list.add(new Bank(r.getInt("bank_id"), r.getString("name"), r.getString("country")));
@@ -26,7 +25,7 @@ public class BankRepository {
 
     public static Bank getById(int id) {
         String sql = "SELECT * FROM banks WHERE bank_id = ?";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet r = stmt.executeQuery();
@@ -39,7 +38,7 @@ public class BankRepository {
 
     public static void add(String name, String country) {
         String sql = "INSERT INTO banks (name, country) VALUES (?, ?)";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, name);
             stmt.setString(2, country);
@@ -49,7 +48,7 @@ public class BankRepository {
 
     public static void update(int id, String name, String country) {
         String sql = "UPDATE banks SET name = ?, country = ? WHERE bank_id = ?";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, name);
             stmt.setString(2, country);
@@ -68,7 +67,7 @@ public class BankRepository {
         sql.setLength(sql.length() - 2);
         sql.append(" WHERE bank_id = ?");
         params.add(id);
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 stmt.setObject(i + 1, params.get(i));
@@ -79,7 +78,7 @@ public class BankRepository {
 
     public static void delete(int id) {
         String sql = "DELETE FROM banks WHERE bank_id = ?";
-        try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+         try (Connection con = DataBaseConfig.getConnection();
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, id);
             stmt.executeUpdate();
